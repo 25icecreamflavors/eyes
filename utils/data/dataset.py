@@ -9,6 +9,16 @@ from torchvision import transforms
 
 class EyesDataset(Dataset):
     def __init__(self, img_dir, annotations_file, mode="train", task=1):
+        """_summary_
+
+        Args:
+            img_dir (str): Path to the image directory
+            annotations_file (str): File with image paths and labels.
+            mode (str, optional): Choose to return labels or not.
+            Defaults to "train".
+            task (int, optional): Task to choose the correct annotation file.
+            Defaults to 1.
+        """
         self.img_labels = pd.read_csv(annotations_file)
         self.img_dir = img_dir
         self.mode = mode
@@ -24,7 +34,7 @@ class EyesDataset(Dataset):
         image = Image.open(img_path).convert("RGB")
         image = transforms.ToTensor()(image)
 
-        if self.mode == "train":
+        if self.mode == "train" or self.mode == "val":
             if self.task == 1:
                 label = self.img_labels["Hypertensive"].iloc[idx]
             else:
