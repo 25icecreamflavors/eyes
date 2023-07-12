@@ -1,8 +1,10 @@
 import os
 
 import pandas as pd
+import torch
+from PIL import Image
 from torch.utils.data import Dataset
-from torchvision.io import read_image
+from torchvision import transforms
 
 
 class EyesDataset(Dataset):
@@ -19,7 +21,8 @@ class EyesDataset(Dataset):
         img_path = os.path.join(
             self.img_dir, self.img_labels["Image"].iloc[idx]
         )
-        image = read_image(img_path)
+        image = Image.open(img_path).convert("RGB")
+        image = transforms.ToTensor()(image)
 
         if self.mode == "train":
             if self.task == 1:
@@ -27,7 +30,7 @@ class EyesDataset(Dataset):
             else:
                 label = self.img_labels["Hypertensive Retinopathy"].iloc[idx]
 
-            return image, label
+            return image, torch.tensor(label)
 
         else:
             return image
