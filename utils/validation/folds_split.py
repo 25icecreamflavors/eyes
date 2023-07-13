@@ -3,18 +3,20 @@ from sklearn.model_selection import StratifiedKFold
 
 
 def split_data_on_folds(annotations_file, num_folds=5, random_state=808):
-    """Method, that splits data on folds using stratification.
+    """Method that splits data on folds using stratification.
 
     Args:
-        annotations_file (str): _description_
+        annotations_file (str): Path to the annotation CSV file.
         num_folds (int, optional): Number of folds to split the data.
-        Defaults to 5.
-        random_state (int, optional): Defaults to 808.
+            Defaults to 5.
+        random_state (int, optional): Random state for reproducibility.
+            Defaults to 808.
 
     Returns:
-        Dict: The dictionary with train and val indices.
+        dict: A dictionary with fold-specific indices.
+            The keys represent the fold names, and the values represent the
+            indices.
     """
-
     # Read the annotation CSV file
     annotations_df = pd.read_csv(annotations_file)
     # The second column contains the labels
@@ -24,12 +26,11 @@ def split_data_on_folds(annotations_file, num_folds=5, random_state=808):
     skf = StratifiedKFold(
         n_splits=num_folds, shuffle=True, random_state=random_state
     )
-    train_indices, val_indices = next(skf.split(annotations_df, labels))
 
-    # Create the folds dictionary
-    folds = {
-        "train": train_indices,
-        "val": val_indices,
-    }
+    folds = []
+
+    # Iterate over the folds and obtain the train and val indices
+    for train_indices, val_indices in skf.split(annotations_df, labels):
+        folds.append({"train": train_indices, "val": val_indices})
 
     return folds
