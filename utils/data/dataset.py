@@ -9,7 +9,7 @@ from torchvision import transforms
 
 class EyesDataset(Dataset):
     def __init__(self, img_dir, annotations_file, mode="train", task=1):
-        """_summary_
+        """Dataset class.
 
         Args:
             img_dir (str): Path to the image directory

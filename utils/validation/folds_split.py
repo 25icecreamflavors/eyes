@@ -3,7 +3,7 @@ from sklearn.model_selection import StratifiedKFold
 
 
 def split_data_on_folds(annotations_file, num_folds=5, random_state=808):
-    """_summary_
+    """Method, that splits data on folds using stratification.
 
     Args:
         annotations_file (str): _description_
