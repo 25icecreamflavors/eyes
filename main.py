@@ -33,6 +33,7 @@ def main():
         train_dataset = EyesDataset(
             img_dir,
             annotations_file,
+            indices=train_indices,
             mode="train",
             task=1,
         )
@@ -40,6 +41,7 @@ def main():
         val_dataset = EyesDataset(
             img_dir,
             annotations_file,
+            indices=val_indices,
             mode="train",
             task=1,
         )
@@ -67,7 +69,9 @@ def main():
             num_epochs,
             focal_loss,
             learning_rate,
-            logger=logger
+            save_every_epoch=False,
+            save_path="models/saved",
+            logger=logger,
         )
 
         # Save the trained model weights if needed

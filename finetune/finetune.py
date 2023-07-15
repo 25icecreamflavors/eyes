@@ -10,6 +10,8 @@ def train(
     num_epochs,
     loss_fn,
     learning_rate,
+    save_path,
+    save_every_epoch=False,
     logger=None,
 ):
     """Train the model using the provided data loaders.
@@ -21,6 +23,9 @@ def train(
         num_epochs (int): The number of training epochs.
         loss_fn (callable): The loss function to use.
         learning_rate (float): The learning rate for the optimizer.
+        save_path (str): The path to save the trained models.
+        save_every_epoch (bool, optional): Whether to save the model after each
+        epoch. Defaults to False.
         logger (logging.Logger, optional): The logger object for logging
         progress.
     """
@@ -32,6 +37,8 @@ def train(
 
     # Define the optimizer
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+    best_val_loss = float("inf")
 
     # Training loop
     with tqdm(total=num_epochs, desc="Epochs", dynamic_ncols=True) as epoch_bar:
@@ -106,3 +113,34 @@ def train(
 
             # Update the epoch progress bar
             epoch_bar.update(1)
+
+            # Save the model after each epoch if enabled
+            # Or the best model based on validation loss
+            if save_every_epoch:
+                # Create the name with params for the model
+                save_name = (
+                    f"{save_path}_val{val_loss:.4f}_epoch{epoch+1}_"
+                    f"lr{learning_rate:.6f}_{loss_fn.__name__}_"
+                    f"{model.__class__.__name__}.pt"
+                )
+                torch.save(model.state_dict(), save_name)
+
+            else:
+                if val_loss < best_val_loss:
+                    best_val_loss = val_loss
+
+                    # Create the name with params for the model
+                    save_name = (
+                        f"{save_path}_best_val{val_loss:.4f}_"
+                        f"lr{learning_rate:.6f}_{loss_fn.__name__}_"
+                        f"{model.__class__.__name__}.pt"
+                    )
+                    torch.save(model.state_dict(), save_name)
+
+        # Save the model after the last epoch
+        save_name = (
+            f"{save_path}_last_val{val_loss:.4f}_"
+            f"lr{learning_rate:.6f}_{loss_fn.__name__}_"
+            f"{model.__class__.__name__}.pt"
+        )
+        torch.save(model.state_dict(), save_name)
