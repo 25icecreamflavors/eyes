@@ -13,9 +13,7 @@ def split_data_on_folds(annotations_file, num_folds=5, random_state=808):
             Defaults to 808.
 
     Returns:
-        dict: A dictionary with fold-specific indices.
-            The keys represent the fold names, and the values represent the
-            indices.
+        list: of dictionaries with train and validation indices.
     """
     # Read the annotation CSV file
     annotations_df = pd.read_csv(annotations_file)

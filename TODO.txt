@@ -1,0 +1,5 @@
+1. Add correct metrics
+2. Add model code
+3. Add main py code for finetuning
+4. Add configs
+5. Add config params in main
